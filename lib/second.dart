@@ -140,7 +140,6 @@ class _SecondpageState extends State<Secondpage> {
       });
     }
   }
-  // #hello
 
   @override
   Widget build(BuildContext context) {
@@ -280,14 +279,10 @@ class _SecondpageState extends State<Secondpage> {
                       borderRadius: 5,
                     ),
                   ),
-                  // ElevatedButton(
-                  //     onPressed: predictDiabetes, child: Text("submit"))
                 ],
               ),
               const SizedBox(height: 16),
               Text('Prediction Result: $predictionResult'),
-              // const SizedBox(height: 20),
-              // ElevatedButton(onPressed: predictDiabetes, child: Text("submit"))
             ],
           ),
         ));
