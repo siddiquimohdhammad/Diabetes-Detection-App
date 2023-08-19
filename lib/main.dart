@@ -1,7 +1,6 @@
 import 'package:diabetes_detection/second.dart';
 import 'package:diabetes_detection/widget/buttonWidget.dart';
 import 'package:flutter/material.dart';
-// import "package:bu";
 
 void main() {
   runApp(const MyApp());
@@ -111,7 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   height: height * 0.04,
                 ),
-                // custom container made by me
                 CustomContainer(
                   text: "Start Now",
                   textColor: Colors.white,
