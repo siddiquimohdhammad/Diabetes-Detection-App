@@ -1,5 +1,7 @@
 import 'package:diabetes_detection/widget/buttonWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Secondpage extends StatefulWidget {
   const Secondpage({super.key});
@@ -36,8 +38,10 @@ Widget Options({required String option}) {
   ]);
 }
 
-Widget InputTextField() {
+Widget inputTextField({required controller, required keyBtype}) {
   return TextField(
+      controller: controller,
+      keyboardType: keyBtype,
       minLines: 1,
       maxLines: 5,
       // maxLength: 200,
@@ -93,9 +97,50 @@ List<String> option6 = [
   'Over 64 years'
 ];
 
-// List<String> option1 = [];
+// ALL TEXT CONTROLLER/
+TextEditingController pregnanciesController = TextEditingController();
+TextEditingController glucoseController = TextEditingController();
+TextEditingController bloodPressureController = TextEditingController();
+TextEditingController skinThicknessController = TextEditingController();
+TextEditingController insulinController = TextEditingController();
+TextEditingController bmiController = TextEditingController();
+TextEditingController diabetesPedigreeController = TextEditingController();
+TextEditingController ageController = TextEditingController();
+String predictionResult = "";
 
 class _SecondpageState extends State<Secondpage> {
+  // PREDICT DIABETES FUNCTION
+  Future<void> predictDiabetes() async {
+    final response = await http.post(
+      Uri.parse(
+          'http://192.168.0.106:8000/predict'), // Replace with your server URL
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        "pregnancies": int.parse(pregnanciesController.text),
+        "glucose": double.parse(glucoseController.text),
+        "bloodpressure": double.parse(bloodPressureController.text),
+        "skinthickness": double.parse(skinThicknessController.text),
+        "insulin": double.parse(insulinController.text),
+        "bmi": double.parse(bmiController.text),
+        "diabetespedigreefunction":
+            double.parse(diabetesPedigreeController.text),
+        "age": int.parse(ageController.text),
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        predictionResult = response.body;
+      });
+    } else {
+      setState(() {
+        predictionResult = "Error: ${response.statusCode}";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -130,7 +175,10 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option1[2]),
               Options(option: option1[3]),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                controller: skinThicknessController,
+                keyBtype: TextInputType.numberWithOptions(decimal: true),
+              ),
               sizedbox,
               Question(
                   text:
@@ -138,7 +186,10 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option2[0]),
               Options(option: option2[1]),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                controller: bloodPressureController,
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
+              ),
               sizedbox,
               Question(
                   text:
@@ -148,7 +199,10 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option3[2]),
               Options(option: option3[3]),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                controller: glucoseController,
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
+              ),
               sizedbox,
               Question(
                   text:
@@ -158,7 +212,10 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option4[3]),
               Options(option: option4[2]),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                controller: insulinController,
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
+              ),
               sizedbox,
               Question(
                   text:
@@ -168,7 +225,10 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option5[1]),
               Options(option: option5[2]),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                controller: diabetesPedigreeController,
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
+              ),
               sizedbox,
               Question(
                   text:
@@ -179,12 +239,20 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option6[2]),
               Options(option: option6[3]),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                  controller: ageController, keyBtype: TextInputType.number),
               sizedbox,
               Question(text: '7) Enter your BMI (Body Mass Index)'),
               sizedbox,
-              InputTextField(),
+              inputTextField(
+                controller: bmiController,
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
+              ),
               sizedbox,
+              inputTextField(
+                controller: pregnanciesController,
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
+              ),
               Row(
                 children: [
                   Expanded(
@@ -204,17 +272,21 @@ class _SecondpageState extends State<Secondpage> {
                     child: CustomContainer(
                       text: "Submit",
                       textColor: Colors.white,
-                      containerColor: Color(0xff53828c),
+                      containerColor: const Color(0xff53828c),
                       width: width * 0.45,
                       height: height * 0.09,
-                      call: () {
-                        // Navigator.pushNamed(context, 'second');
-                      },
+                      call: predictDiabetes,
                       borderRadius: 5,
                     ),
                   ),
+                  // ElevatedButton(
+                  //     onPressed: predictDiabetes, child: Text("submit"))
                 ],
-              )
+              ),
+              const SizedBox(height: 16),
+              Text('Prediction Result: $predictionResult'),
+              // const SizedBox(height: 20),
+              // ElevatedButton(onPressed: predictDiabetes, child: Text("submit"))
             ],
           ),
         ));
