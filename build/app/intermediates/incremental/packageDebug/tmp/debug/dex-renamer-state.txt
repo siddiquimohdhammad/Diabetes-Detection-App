@@ -1,0 +1,4 @@
+#Mon Feb 19 14:26:38 IST 2024
+base.0=C\:\\Users\\HP\\Desktop\\New folder (3)\\Honours Project\\Diabetes_Detection\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

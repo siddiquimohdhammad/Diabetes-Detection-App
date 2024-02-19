@@ -1,3 +1,5 @@
+// import 'dart:js';
+
 import 'package:diabetes_detection/widget/buttonWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -19,17 +21,17 @@ Widget Question({required String text}) {
 
 Widget Options({required String option}) {
   return Row(children: [
-    Text(
+    const Text(
       "\u2022",
       style: TextStyle(fontSize: 30),
     ), //bullet text
-    SizedBox(
+    const SizedBox(
       width: 10,
     ),
     Expanded(
       child: Text(
         option,
-        style: TextStyle(
+        style: const TextStyle(
             fontSize: 15,
             color: Color(0xff53828c),
             fontWeight: FontWeight.w600),
@@ -48,15 +50,16 @@ Widget inputTextField({required controller, required keyBtype}) {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.transparent, width: 0)),
+            borderSide: const BorderSide(color: Colors.transparent, width: 0)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.transparent, width: 0)),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            borderSide: const BorderSide(color: Colors.transparent, width: 0)),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         filled: true,
         fillColor: Colors.white,
         hintText: "Your Answer",
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
         ),
@@ -64,31 +67,31 @@ Widget inputTextField({required controller, required keyBtype}) {
 }
 
 List<String> option1 = [
-  "Soft and spongy (like you can easily pinch a lot of flesh)",
-  "Moderately soft and spongy (like you can pinch a little bit of flesh)",
-  "Moderately hard and dense (like you can't pinch much flesh)",
-  "Hard and dense (like you can't pinch any flesh)"
+  "Soft and spongy (like you can easily pinch a lot of flesh)  (20-30 mm)",
+  "Moderately soft and spongy (like you can pinch a little bit of flesh) (15-20 mm)",
+  "Moderately hard and dense (like you can't pinch much flesh) (10-15 mm)",
+  "Hard and dense (like you can't pinch any flesh) (10 mm)"
 ];
 List<String> option2 = [
-  'Yes, I currently take medication for high blood pressure',
-  'No, I have never taken medication for high or low blood pressure.'
+  'Yes, I currently take medication for high blood pressure.  ( range from 130/80 mm Hg to 180/110 mm Hg or higher.)',
+  'No, I have never taken medication for high or low blood pressure. ( less than 120/80 mm Hg)'
 ];
 List<String> option3 = [
-  'Within the past hour',
-  'Within the past 2-3 hours',
-  'Within the past 4-6 hours',
-  'Within the past 7-12 hours'
+  'Within the past hour. (140-180 mg/dL)',
+  'Within the past 2-3 hours. (140-180 mg/dL)',
+  'Within the past 4-6 hours. (100-140 mg/dL)',
+  'Within the past 7-12 hours. (80-120 mg/dL)'
 ];
 List<String> option4 = [
-  'No symptoms',
-  'Mild symptoms (slight shakiness, increased heart rate, or mild sweating)',
-  'Moderate symptoms (significant shakiness, increased heart rate, sweating, or mild confusion)',
-  'Severe symptoms (extreme shakiness, increased heart rate, sweating, confusion, or loss of consciousness)'
+  'No symptoms. (Below 5 mu U/ml)',
+  'Mild symptoms (slight shakiness, increased heart rate, or mild sweating). (Between 5-10 mu U/ml)',
+  'Moderate symptoms (significant shakiness, increased heart rate, sweating, or mild confusion). (Between 10-15 mu U/ml)',
+  'Severe symptoms (extreme shakiness, increased heart rate, sweating, confusion, or loss of consciousness). (Above 15 mu U/ml)'
 ];
 List<String> option5 = [
-  'No',
-  'yes: grandparent uncle aunt first cousin',
-  'yes: brother sister own child parent'
+  'No. (0)',
+  'yes: grandparent uncle aunt first cousin. (from 0 to 1.5)',
+  'yes: brother sister own child parent. (from 0 to 2.5)'
 ];
 List<String> option6 = [
   'Under 45 years',
@@ -109,11 +112,33 @@ TextEditingController ageController = TextEditingController();
 String predictionResult = "";
 
 class _SecondpageState extends State<Secondpage> {
+  Widget showD(BuildContext context) {
+    return AlertDialog(
+      title: const Text("DIABETES PREDICTION"),
+      content: Text('Prediction Result: $predictionResult'),
+      actions: [
+        ElevatedButton(
+            onPressed: () {
+              pregnanciesController.clear();
+              glucoseController.clear();
+              bloodPressureController.clear();
+              skinThicknessController.clear();
+              insulinController.clear();
+              bmiController.clear();
+              diabetesPedigreeController.clear();
+              ageController.clear();
+              Navigator.of(context).pop(false);
+            },
+            child: Text("okay"))
+      ],
+    );
+  }
+
   // PREDICT DIABETES FUNCTION
   Future<void> predictDiabetes() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.0.106:8000/predict'), // Replace with your server URL
+          'http://192.168.0.3:8000/predict'), // Replace with your server URL
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -133,6 +158,7 @@ class _SecondpageState extends State<Secondpage> {
     if (response.statusCode == 200) {
       setState(() {
         predictionResult = response.body;
+        // ageController.clear();
       });
     } else {
       setState(() {
@@ -141,13 +167,23 @@ class _SecondpageState extends State<Secondpage> {
     }
   }
 
+  // void showDialogue() {
+  //   AlertDialog(
+  //     title: Text("Diabetes prediction"),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     Widget sizedbox = SizedBox(
-      height: height * 0.03,
+      height: height * 0.045,
     );
+    Widget sizedbox1 = SizedBox(
+      height: height * 0.01,
+    );
+
     return Scaffold(
         appBar: AppBar(
           iconTheme: const IconThemeData(
@@ -174,10 +210,10 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option1[1]),
               Options(option: option1[2]),
               Options(option: option1[3]),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                 controller: skinThicknessController,
-                keyBtype: TextInputType.numberWithOptions(decimal: true),
+                keyBtype: const TextInputType.numberWithOptions(decimal: true),
               ),
               sizedbox,
               Question(
@@ -185,7 +221,7 @@ class _SecondpageState extends State<Secondpage> {
                       '2) Have you ever taken medication regularly to manage high blood pressure?'),
               Options(option: option2[0]),
               Options(option: option2[1]),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                 controller: bloodPressureController,
                 keyBtype: const TextInputType.numberWithOptions(decimal: true),
@@ -198,7 +234,7 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option3[1]),
               Options(option: option3[2]),
               Options(option: option3[3]),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                 controller: glucoseController,
                 keyBtype: const TextInputType.numberWithOptions(decimal: true),
@@ -211,7 +247,7 @@ class _SecondpageState extends State<Secondpage> {
               Options(option: option4[1]),
               Options(option: option4[3]),
               Options(option: option4[2]),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                 controller: insulinController,
                 keyBtype: const TextInputType.numberWithOptions(decimal: true),
@@ -220,11 +256,11 @@ class _SecondpageState extends State<Secondpage> {
               Question(
                   text:
                       '5) Has anyone in your immediate family or other relatives been diagnosed with diabetes?'),
-              sizedbox,
+              // sizedbox,
               Options(option: option5[0]),
               Options(option: option5[1]),
               Options(option: option5[2]),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                 controller: diabetesPedigreeController,
                 keyBtype: const TextInputType.numberWithOptions(decimal: true),
@@ -233,26 +269,30 @@ class _SecondpageState extends State<Secondpage> {
               Question(
                   text:
                       '6) Please select your Age from between the given ranges'),
-              sizedbox,
+              // sizedbox,
               Options(option: option6[0]),
               Options(option: option6[1]),
               Options(option: option6[2]),
               Options(option: option6[3]),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                   controller: ageController, keyBtype: TextInputType.number),
               sizedbox,
               Question(text: '7) Enter your BMI (Body Mass Index)'),
-              sizedbox,
+              sizedbox1,
               inputTextField(
                 controller: bmiController,
                 keyBtype: const TextInputType.numberWithOptions(decimal: true),
               ),
               sizedbox,
+              Question(text: "8) Enter number of pregnancies ?"),
+              sizedbox1,
               inputTextField(
                 controller: pregnanciesController,
                 keyBtype: const TextInputType.numberWithOptions(decimal: true),
               ),
+              sizedbox,
+
               Row(
                 children: [
                   Expanded(
@@ -275,14 +315,21 @@ class _SecondpageState extends State<Secondpage> {
                       containerColor: const Color(0xff53828c),
                       width: width * 0.45,
                       height: height * 0.09,
-                      call: predictDiabetes,
+                      call: () {
+                          predictDiabetes();
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return showD(context);
+                            });
+                      },
                       borderRadius: 5,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Text('Prediction Result: $predictionResult'),
+              // Text('Prediction Result: $predictionResult'),
             ],
           ),
         ));

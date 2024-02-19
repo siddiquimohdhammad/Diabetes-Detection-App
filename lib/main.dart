@@ -45,7 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
+            // centerTitle:true,
+          title:  Text(
             "Diabeto Predict",
             style: TextStyle(
                 color: Color(
@@ -53,32 +54,32 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 fontSize: 25),
           ),
-          actions: [
-            Row(
-              children: [
-                TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      "Home",
-                      style: TextStyle(
-                        color: Color(
-                          0xff53828c,
-                        ),
-                      ),
-                    )),
-                TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      "Test",
-                      style: TextStyle(
-                        color: Color(
-                          0xff53828c,
-                        ),
-                      ),
-                    ))
-              ],
-            )
-          ],
+          // actions: [
+          //   Row(
+          //     children: [
+          //       TextButton(
+          //           onPressed: () {},
+          //           child: const Text(
+          //             "Home",
+          //             style: TextStyle(
+          //               color: Color(
+          //                 0xff53828c,
+          //               ),
+          //             ),
+          //           )),
+          //       TextButton(
+          //           onPressed: () {},
+          //           child: const Text(
+          //             "Test",
+          //             style: TextStyle(
+          //               color: Color(
+          //                 0xff53828c,
+          //               ),
+          //             ),
+          //           ))
+          //     ],
+          //   )
+          // ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -88,10 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 const Text(
                   "Let us help you beat diabetes before it beats you.",
+                  textAlign: TextAlign.justify,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
                 ),
+                SizedBox(height: 10,),
                 const Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in rutrum enim, nec ultrices arcu. Proin in nisl in quam euismod convallis. Curabitur eu felis tempor, laoreet ex ac, aliquet erat. Maecenas eget ligula id tellus interdum lobortis. Curabitur dapibus eu massa id congue. Duis accumsan cursus massa et dictum..",
+                  "As of 2014, the number of people with diabetes has increased from 108 million in 1980 to 422 million. Prevalence has been rising more rapidly in low- and middle-income countries than in high-income countries",
+                  textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 15,
                   ),
